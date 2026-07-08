@@ -1,0 +1,7 @@
+.env.*
+
+# We will only disclose these once the project is read
+
+agent.md
+README.md
+AI_Disclosures.md
