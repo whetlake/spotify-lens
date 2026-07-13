@@ -1,0 +1,17 @@
+[project]
+name = "spotify-lens"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "pandas>=3.0.3",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.3.0",
+    "jupyterlab>=4.6.1",
+    "matplotlib>=3.11.0",
+    "plotly>=6.9.0",
+    "scipy>=1.17.1",
+    "upset-plot-plotly>=0.2.2",
+]
