@@ -1,7 +1,8 @@
 .env.*
+.venv/
+**/.ipynb_checkpoints/
 .DS_Store
 /data
-notebooks/.ipynb_checkpoints/
 
 # We will only disclose these once the project is read
 
