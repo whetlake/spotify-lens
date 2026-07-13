@@ -1,7 +1,11 @@
 .env.*
+.DS_Store
+/data
+notebooks/.ipynb_checkpoints/
 
 # We will only disclose these once the project is read
 
 agent.md
 README.md
 AI_Disclosures.md
+ROADMAP.md
