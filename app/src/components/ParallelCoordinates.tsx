@@ -22,6 +22,7 @@ export type AudioFeatureRanges = Partial<Record<AudioFeatureKey, AudioFeatureRan
 interface ParallelCoordinatesProps {
     tracks: TrackRow[]
     matchingCount: number
+    focusedCount: number
     selectedGenre: string | null
     featureRanges: AudioFeatureRanges
     onFeatureRangesChange: (featureRanges: AudioFeatureRanges) => void
@@ -70,6 +71,7 @@ function getNextFeatureRanges(event: PlotRestyleEvent, featureRanges: AudioFeatu
 export function ParallelCoordinates({
     tracks,
     matchingCount,
+    focusedCount,
     selectedGenre,
     featureRanges,
     onFeatureRangesChange
@@ -89,8 +91,10 @@ export function ParallelCoordinates({
             <div className="parallel-coordinates-heading">
                 <h2>Audio feature ranges</h2>
                 <p>
-                    Showing {matchingCount.toLocaleString()} of{" "}
-                    {tracks.length.toLocaleString()} track–genre rows.
+                    {selectedGenre
+                        ? `Showing ${focusedCount.toLocaleString()} ${selectedGenre} rows within ${matchingCount.toLocaleString()} matching rows.`
+                        : `Showing ${matchingCount.toLocaleString()} of ${tracks.length.toLocaleString()} track–genre rows.`
+                    }
                 </p>
             </div>
 
@@ -141,7 +145,7 @@ export function ParallelCoordinates({
                 useResizeHandler
                 style={{
                     width: "100%",
-                    height: "480px"
+                    height: "620px"
                 }}
             />
         </section>

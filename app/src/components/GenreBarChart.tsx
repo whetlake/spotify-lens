@@ -48,13 +48,13 @@ export function GenreBarChart({tracks, selectedGenre, onGenreSelect}: GenreBarCh
                     autosize: true,
                     margin: {
                         top: 20,
-                        right: 120,
+                        right: 24,
                         bottom: 40,
-                        left: 190
+                        left: 150
                     },
                     xaxis: {
                         title: {
-                            text: "Track-genre rows"
+                            text: "Rows"
                         }
                     },
                     yaxis: {
@@ -72,7 +72,7 @@ export function GenreBarChart({tracks, selectedGenre, onGenreSelect}: GenreBarCh
                 useResizeHandler
                 style={{
                     width: "100%",
-                    height: `${Math.max(420, genreCounts.length * 28 + 120)}px`
+                    height: `620px`
                 }}
                 onClick={(event: PlotMouseEvent) => {
                     const genre = event.points[0]?.y

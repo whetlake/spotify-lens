@@ -49,6 +49,12 @@ function App() {
     return result.rows.filter((track) => trackMatchesRanges(track, ranges))
   }, [result, featureRanges])
 
+  const focusedRows = useMemo(() => {
+    if (!selectedGenre) return matchingRows
+
+    return matchingRows.filter((track) => track.genre === selectedGenre)
+  }, [matchingRows, selectedGenre])
+
   useEffect(() => {
     let cancelled = false
     loadTracks()
@@ -82,24 +88,27 @@ function App() {
     <PageLayout>
       <Header
         rowCount={result.rows.length}
-        matchingCount={matchingRows.length}
+        matchingCount={focusedRows.length}
         elapsedMs={result.elapsedMs}
       />
-      <ParallelCoordinates
-        tracks={result.rows}
-        matchingCount={matchingRows.length}
-        selectedGenre={selectedGenre}
-        featureRanges={featureRanges}
-        onFeatureRangesChange={(nextFeatureRanges) => {
-          setFeatureRanges(nextFeatureRanges)
-          setSelectedGenre(null)
-        }}
-      />
-      <GenreBarChart
-        tracks={matchingRows}
-        selectedGenre={selectedGenre}
-        onGenreSelect={setSelectedGenre}
+      <section className="analysis-grid">
+        <ParallelCoordinates
+          tracks={result.rows}
+          matchingCount={matchingRows.length}
+          focusedCount={focusedRows.length}
+          selectedGenre={selectedGenre}
+          featureRanges={featureRanges}
+          onFeatureRangesChange={(nextFeatureRanges) => {
+            setFeatureRanges(nextFeatureRanges)
+            setSelectedGenre(null)
+          }}
         />
+        <GenreBarChart
+          tracks={matchingRows}
+          selectedGenre={selectedGenre}
+          onGenreSelect={setSelectedGenre}
+          />
+      </section>
     </PageLayout>
   )
 }
