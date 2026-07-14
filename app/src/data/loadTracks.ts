@@ -1,0 +1,82 @@
+/**
+ * Loads and parses the Spotify CSV in the browser, validates its structure
+ * and converts numeric columns. It also records the loading time and any
+ * parsing issues. Loading time can be used to evaluate performance.
+ */
+
+import Papa from "papaparse"
+import {
+    ALL_FIELDS,
+    NUMERIC_FIELDS,
+    type TrackRow
+} from "../types/TrackRow"
+
+export interface TracksLoadResult {
+    rows: TrackRow[],
+    elapsedMs: number, // how long is loading and parsing taking
+    parseErrorCount: number,
+    invalidRowCound: number
+}
+
+// This defines which columns from the CSV that are initialyy text,
+// should be converted to numbers
+const dynamicTyping = Object.fromEntries(
+    NUMERIC_FIELDS.map((field) => [field, true])
+)
+
+// Reuse the same loading promise because React (e.g. StrictMode) runs effects twice
+// We dont want to load the data twice
+let cachedLoad: Promise<TracksLoadResult> | undefined
+
+function parsedTracks(): Promise<TracksLoadResult> {
+    const startedAt = performance.now()
+    const csvUrl = new URL(
+        `${import.meta.env.BASE_URL}data/SpotifyFeatures.csv`,
+        window.location.origin
+    ).href
+
+    return new Promise((resolve, reject) => {
+        Papa.parse<TrackRow>(csvUrl, {
+            download: true,
+            header: true,
+            worker: true,
+            skipEmptyLines: true,
+            dynamicTyping,
+            complete: (results) => {
+                const columnNames = results.meta.fields ?? []
+                const missingColumns = ALL_FIELDS.filter(
+                    (field) => !columnNames.includes(field)
+                )
+                if (missingColumns.length > 0) {
+                    reject(new Error(`Missing required columsn: ${missingColumns.join(", ")}`))
+                    return
+                }
+                const invalidRowCound = results.data.filter(
+                    (row) =>
+                        !row.track_id ||
+                        !row.genre ||
+                        NUMERIC_FIELDS.some(
+                            (field) => !Number.isFinite(row[field])
+                        )
+                ).length
+
+                resolve({
+                    rows: results.data,
+                    elapsedMs: performance.now() - startedAt,
+                    parseErrorCount: results.errors.length,
+                    invalidRowCound
+                })
+            },
+            error: (error) => { reject(error) }
+        })
+    })
+}
+
+export function loadTracks(): Promise<TracksLoadResult> {
+    if (!cachedLoad) {
+        cachedLoad = parsedTracks().catch((error) => {
+            cachedLoad = undefined; throw error
+        })
+    }
+    return cachedLoad
+}
