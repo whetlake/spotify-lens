@@ -3,6 +3,10 @@ import {
   loadTracks,
   type TracksLoadResult
 } from './data/loadTracks'
+import { PageLayout } from "./components/PageLayout"
+import { LoadingScreen } from "./components/LoadingScreen";
+import { Header } from "./components/Header"
+import "./App.css"
 
 function App() {
   const [result, setResult] = useState<TracksLoadResult | null>(null)
@@ -34,21 +38,17 @@ function App() {
   }
 
   if (!result) {
-    return (
-      <main>
-        <h1>Spotify Lens</h1>
-        <p aria-live="polite">Loading and parsing the dataset...</p>
-      </main>
-    )
+    return <LoadingScreen/>
   }
 
   return (
-    <main>
-      <h1>Spotify Lens</h1>
-      <p>Loaded {result.rows.length.toLocaleString()} track-genre rows in {(result.elapsedMs / 1000).toFixed(2)} seconds.</p>
-      <p>CSV parsing errors: {result.parseErrorCount}</p>
-      <p>Invalid rows: {result.invalidRowCound}</p>
-    </main>
+    <PageLayout>
+      <Header
+        rowCount={result.rows.length}
+        matchingCount={result.rows.length}
+        elapsedMs={result.elapsedMs}
+      />
+    </PageLayout>
   )
 }
 
