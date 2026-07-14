@@ -28,16 +28,24 @@ const dynamicTyping = Object.fromEntries(
 // We dont want to load the data twice
 let cachedLoad: Promise<TracksLoadResult> | undefined
 
-function parsedTracks(): Promise<TracksLoadResult> {
+async function parsedTracks(): Promise<TracksLoadResult> {
     const startedAt = performance.now()
     const csvUrl = new URL(
         `${import.meta.env.BASE_URL}data/SpotifyFeatures.csv`,
         window.location.origin
     ).href
 
+    const response = await fetch(csvUrl)
+    if (!response.ok) {
+        throw new Error(`Could not load dataset: ${response.status} ${response.statusText}`)
+    }
+
+    // Fetch the CSV as text first. This is more reliable on GitHub Pages than
+    // letting Papa Parse do the download internally.
+    const csvText = await response.text()
+
     return new Promise((resolve, reject) => {
-        Papa.parse<TrackRow>(csvUrl, {
-            download: true,
+        Papa.parse<TrackRow>(csvText, {
             header: true,
             worker: true,
             skipEmptyLines: true,
@@ -67,7 +75,7 @@ function parsedTracks(): Promise<TracksLoadResult> {
                     invalidRowCound
                 })
             },
-            error: (error) => { reject(error) }
+            error: (error: Error) => { reject(error) }
         })
     })
 }
