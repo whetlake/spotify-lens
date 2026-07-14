@@ -44,40 +44,35 @@ async function parsedTracks(): Promise<TracksLoadResult> {
     // letting Papa Parse do the download internally.
     const csvText = await response.text()
 
-    return new Promise((resolve, reject) => {
-        Papa.parse<TrackRow>(csvText, {
-            header: true,
-            worker: true,
-            skipEmptyLines: true,
-            dynamicTyping,
-            complete: (results) => {
-                const columnNames = results.meta.fields ?? []
-                const missingColumns = ALL_FIELDS.filter(
-                    (field) => !columnNames.includes(field)
-                )
-                if (missingColumns.length > 0) {
-                    reject(new Error(`Missing required columsn: ${missingColumns.join(", ")}`))
-                    return
-                }
-                const invalidRowCound = results.data.filter(
-                    (row) =>
-                        !row.track_id ||
-                        !row.genre ||
-                        NUMERIC_FIELDS.some(
-                            (field) => !Number.isFinite(row[field])
-                        )
-                ).length
-
-                resolve({
-                    rows: results.data,
-                    elapsedMs: performance.now() - startedAt,
-                    parseErrorCount: results.errors.length,
-                    invalidRowCound
-                })
-            },
-            error: (error: Error) => { reject(error) }
-        })
+    const results = Papa.parse<TrackRow>(csvText, {
+        header: true,
+        skipEmptyLines: true,
+        dynamicTyping
     })
+
+    const columnNames = results.meta.fields ?? []
+    const missingColumns = ALL_FIELDS.filter(
+        (field) => !columnNames.includes(field)
+    )
+    if (missingColumns.length > 0) {
+        throw new Error(`Missing required columns: ${missingColumns.join(", ")}`)
+    }
+
+    const invalidRowCound = results.data.filter(
+        (row) =>
+            !row.track_id ||
+            !row.genre ||
+            NUMERIC_FIELDS.some(
+                (field) => !Number.isFinite(row[field])
+            )
+    ).length
+
+    return {
+        rows: results.data,
+        elapsedMs: performance.now() - startedAt,
+        parseErrorCount: results.errors.length,
+        invalidRowCound
+    }
 }
 
 export function loadTracks(): Promise<TracksLoadResult> {
