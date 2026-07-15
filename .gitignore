@@ -5,7 +5,7 @@
 /data
 docs/
 
-# We will only disclose these once the project is read
+# Helpers, and in process sketches, process and memory files. Not for production.
 
 agent.md
 app/README.md
