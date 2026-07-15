@@ -130,4 +130,4 @@ Next I would focus on:
 - improving dense-chart rendering, for example by showing 25th, 50th and 75th percentile feature profiles per genre. This would allow larger datasets as well.
 - improving chart performance and track-highlighting speed
 - exploring a simple similar-tracks feature where selected audio-feature values are compared against existing tracks
-- adding tests around important data transformations and chart interactions
+- adding unit tests around important data transformations, tests around chart interactions, and end-to-end testing
