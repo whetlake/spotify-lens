@@ -64,7 +64,7 @@ function App() {
     .catch((caughtError: unknown) => {
       if (!cancelled) {
         setError(
-          caughtError instanceof Error ? caughtError.message : "An unknown error occured"
+          caughtError instanceof Error ? caughtError.message : "An unknown error occurred"
         )
       }
     })

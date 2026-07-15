@@ -24,8 +24,19 @@ export function GenreBarChart({tracks, selectedGenre, onGenreSelect}: GenreBarCh
     return (
         <section className="genre-bar-chart">
             <div className="genre-bar-chart-heading">
-                <h2>Rows by genre</h2>
-                <p>Counts are track-genre rows, not unique track IDs.</p>
+                <div>
+                    <h2>Rows by genre</h2>
+                    <p>Click a bar to focus a genre.</p>
+                </div>
+                {selectedGenre && (
+                    <button
+                        className="genre-reset-button"
+                        type="button"
+                        onClick={() => { onGenreSelect(null) }}
+                    >
+                        Reset genre
+                    </button>
+                )}
             </div>
 
             <Plot
