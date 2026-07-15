@@ -15,6 +15,31 @@ The app is deployed with GitHub Pages:
 
 https://whetlake.github.io/spotify-lens/
 
+## Quick start
+
+Clone the repository:
+
+```bash
+git clone https://github.com/whetlake/spotify-lens.git
+cd spotify-lens
+```
+
+Run the app locally:
+
+```bash
+cd app
+pnpm install
+pnpm dev
+```
+
+Run the notebook:
+
+```bash
+uv run jupyter lab
+```
+
+Then open `notebooks/eda.ipynb`.
+
 ## Project idea
 
 The notebook showed that the same track can appear under several genres. Because of that, the app treats each row as a track–genre row instead of forcing each track into one genre.
@@ -91,3 +116,18 @@ https://whetlake.github.io/spotify-lens/
 
 - The app is exploratory, not predictive.
 - The dataset license is listed as unknown on Kaggle.
+
+
+## Future work
+
+Next I would focus on:
+
+- adding a matching-tracks table with track name, artist, genre and selected audio-feature values
+- allowing a selected track to show similar tracks based on audio-feature distance
+- allowing multiple selected genres to be highlighted separately in the parallel-coordinates chart
+- adding categorical filters for key, mode and time signature
+- improving reset and empty states for selected ranges, focused genres and zero-result selections
+- improving dense-chart rendering, for example by showing 25th, 50th and 75th percentile feature profiles per genre. This would allow larger datasets as well.
+- improving chart performance and track-highlighting speed
+- exploring a simple similar-tracks feature where selected audio-feature values are compared against existing tracks
+- adding tests around important data transformations and chart interactions
