@@ -12,7 +12,7 @@ export function Header({rowCount, elapsedMs, matchingCount}: HeaderProps) {
                 <div className="header-brand">
                     <div className="header-brand-name">Spotify Lens</div>
                     <div className="header-brand-divider" />
-                    <p className="header-brand-description">Find tracks by how they sound</p>
+                    <p className="header-brand-description">Find genres by how they sound</p>
                 </div>
             </div>
             <div className="header-summary">
